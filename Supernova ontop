@@ -1,0 +1,182 @@
+-- [[ SUPERNOVA HUB - GUI ]] --
+
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "Supernova HuB 🚀",
+   LoadingTitle = "Supernova System Loading...",
+   LoadingSubtitle = "by DIZ System",
+   ConfigurationSaving = {
+      Enabled = true,
+      FolderName = "SupernovaHubConfig",
+      FileName = "MainConfig"
+   },
+   Discord = {
+      Enabled = false
+   },
+   KeySystem = false
+})
+
+-- Status Variabel Global
+_G.AutoFarm = false
+_G.AutoTrade = false
+_G.AutoAcceptTrade = false
+_G.AutoSell = false
+_G.AntiAFK = false
+
+---------------------------------------------------------
+-- TAB 1: AUTOMATION (AUTO FARM & AUTO SELL)
+---------------------------------------------------------
+local MainTab = Window:CreateTab("Automation", 4483362458)
+
+local SectionFarm = MainTab:CreateSection("Farm & Sell")
+
+-- Toggle Auto Farm Koin
+local ToggleFarm = MainTab:CreateToggle({
+   Name = "Auto Farm Koin (Ultra Fast)",
+   CurrentValue = false,
+   Flag = "ToggleAutoFarm",
+   Callback = function(Value)
+      _G.AutoFarm = Value
+      if Value then
+         task.spawn(function()
+            while _G.AutoFarm do
+               pcall(function()
+                  local args = {
+                     1.9180123422955457,
+                     vector.create(-1161.384521484375, 0.7260000109672546, -160.93051147460938),
+                     "Basic Coin",
+                     [6] = 15
+                  }
+
+                  game:GetService("ReplicatedStorage")
+                      :WaitForChild("Assets")
+                      :WaitForChild("Events")
+                      :WaitForChild("CoinLanded")
+                      :FireServer(unpack(args))
+               end)
+               
+               task.wait(0.01) -- Delay Auto Farm
+            end
+         end)
+      end
+   end,
+})
+
+-- Toggle Auto Sell All
+local ToggleSell = MainTab:CreateToggle({
+   Name = "Auto Sell All Items",
+   CurrentValue = false,
+   Flag = "ToggleAutoSell",
+   Callback = function(Value)
+      _G.AutoSell = Value
+      if Value then
+         task.spawn(function()
+            while _G.AutoSell do
+               pcall(function()
+                  game:GetService("ReplicatedStorage")
+                      :WaitForChild("Assets")
+                      :WaitForChild("Events")
+                      :WaitForChild("SellAll")
+                      :FireServer()
+               end)
+               
+               task.wait(1) -- Delay Auto Sell
+            end
+         end)
+      end
+   end,
+})
+
+---------------------------------------------------------
+-- TAB 2: TRADING & MISC
+---------------------------------------------------------
+local TradeTab = Window:CreateTab("Trading & Misc", 4483362458)
+
+local SectionTrade = TradeTab:CreateSection("Trade Automation")
+
+-- Toggle Auto Add Item to Trade
+local ToggleTrade = TradeTab:CreateToggle({
+   Name = "Auto Add Item to Trade",
+   CurrentValue = false,
+   Flag = "ToggleAutoTrade",
+   Callback = function(Value)
+      _G.AutoTrade = Value
+      if Value then
+         task.spawn(function()
+            while _G.AutoTrade do
+               pcall(function()
+                  local args = {
+                     5
+                  }
+
+                  game:GetService("ReplicatedStorage")
+                      :WaitForChild("Assets")
+                      :WaitForChild("Events")
+                      :WaitForChild("TradeAddItem")
+                      :FireServer(unpack(args))
+               end)
+               
+               task.wait(0.5) -- Delay memasukkan item
+            end
+         end)
+      end
+   end,
+})
+
+-- Toggle Auto Accept Trade
+local ToggleAcceptTrade = TradeTab:CreateToggle({
+   Name = "Auto Accept Trade",
+   CurrentValue = false,
+   Flag = "ToggleAutoAcceptTrade",
+   Callback = function(Value)
+      _G.AutoAcceptTrade = Value
+      if Value then
+         task.spawn(function()
+            while _G.AutoAcceptTrade do
+               pcall(function()
+                  game:GetService("ReplicatedStorage")
+                      :WaitForChild("Assets")
+                      :WaitForChild("Events")
+                      :WaitForChild("TradeAccept")
+                      :FireServer()
+               end)
+               
+               task.wait(1) -- Delay menyetujui trade
+            end
+         end)
+      end
+   end,
+})
+
+local SectionMisc = TradeTab:CreateSection("Utilities")
+
+-- Toggle Anti-AFK
+local ToggleAFK = TradeTab:CreateToggle({
+   Name = "Anti-AFK System",
+   CurrentValue = false,
+   Flag = "ToggleAntiAFK",
+   Callback = function(Value)
+      _G.AntiAFK = Value
+      if Value then
+         local VirtualUser = game:GetService("VirtualUser")
+         game:GetService("Players").LocalPlayer.Idled:Connect(function()
+            if _G.AntiAFK then
+               VirtualUser:CaptureController()
+               VirtualUser:ClickButton2(Vector2.new())
+               print("[Supernova Hub] Anti-AFK Active.")
+            end
+         end)
+      end
+   end,
+})
+
+---------------------------------------------------------
+-- NOTIFIKASI
+---------------------------------------------------------
+Rayfield:Notify({
+   Title = "Supernova Hub",
+   Content = "Fitur Auto Trade & Auto Accept Berhasil Dimuat!",
+   Duration = 5,
+   Image = 4483362458,
+})
